@@ -86,4 +86,4 @@ setTimeout(() => {
       console.error('MQTT error:', error);
     });
   }
-}, 2000); // Wait 2 seconds for DB connection to establish
+}, 2000); 
