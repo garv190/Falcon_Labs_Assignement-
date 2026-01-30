@@ -11,16 +11,39 @@ A simple Node.js service for handling IoT temperature sensor data. It saves read
 
 ## Getting Started
 
-1. Grab the code: `git clone <repo-url>`
-2. Install stuff: `npm install`
-3. Set up your `.env` file:
-   ```
-   MONGO_URI=""
-   MQTT_URI=""
-   ```
-4. Run it: `npm run dev` for development
+You'll need Node.js 18+ and a MongoDB Atlas account (free tier works).
 
-**Note:** Make sure your MongoDB Atlas IP whitelist includes your current IP address, or the database connection will fail.
+1. **Get the code**
+   ```bash
+   git clone <your-repo-url>
+   cd falcon_lab_project
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up MongoDB Atlas**
+   - Sign up at mongodb.com/atlas
+   - Create a free cluster
+   - Make a database user
+   - Grab your connection string
+   - Add your IP to the whitelist (or allow all IPs for testing)
+
+4. **Create your .env file**
+   ```
+   MONGO_URI=mongodb+srv://your-username:your-password@cluster0.xxxxx.mongodb.net/sensor_db?retryWrites=true&w=majority
+   MQTT_URI=mqtt://localhost:1883
+   ```
+
+5. **Run the server**
+   ```bash
+   npm run dev  # for development
+   npm run serve  # for production
+   ```
+
+Server starts on port 4000. If MongoDB connection fails, check your IP whitelist - that's usually the issue.
 
 ## API Stuff
 
@@ -54,16 +77,64 @@ Example: `GET /api/sensor/sensor-01/latest`
 
 Returns the most recent reading for that device.
 
-## MQTT Bonus Feature
+## Testing
 
-If you have an MQTT broker running, this will automatically listen for temperature updates.
+Server runs on `http://localhost:4000`. Here's how to test it out.
 
-- Topic: `iot/sensor/<deviceId>/temperature`
-- Message: Just the temperature number as text (like "32.1")
-- It saves these directly to the database
+### With curl
 
+Add a reading:
+```bash
+curl -X POST http://localhost:4000/api/sensor/ingest \
+  -H "Content-Type: application/json" \
+  -d '{"deviceId": "sensor-01", "temperature": 32.1}'
+```
 
-## Database Schema
+Get the latest reading:
+```bash
+curl http://localhost:4000/api/sensor/sensor-01/latest
+```
+
+Try with another sensor:
+```bash
+curl -X POST http://localhost:4000/api/sensor/ingest \
+  -H "Content-Type: application/json" \
+  -d '{"deviceId": "sensor-02", "temperature": 28.5}'
+
+curl http://localhost:4000/api/sensor/sensor-02/latest
+```
+
+### With Postman
+
+1. Set your base URL to `http://localhost:4000`
+2. For POST requests:
+   - Method: POST
+   - URL: `{{base_url}}/api/sensor/ingest`
+   - Headers: `Content-Type: application/json`
+   - Body: raw JSON like `{"deviceId": "sensor-01", "temperature": 32.1}`
+3. For GET requests:
+   - Method: GET
+   - URL: `{{base_url}}/api/sensor/sensor-01/latest`
+
+### What you'll get back
+
+**Success (POST):**
+```json
+{
+  "_id": "some-id-here",
+  "deviceId": "sensor-01",
+  "temperature": 32.1,
+  "timestamp": 1705312440000,
+  "createdAt": "2024-01-15T10:00:00.000Z"
+}
+```
+
+**Success (GET):** Same format as above
+
+**Errors:**
+- `400` - Missing deviceId or temperature
+- `404` - No readings for that device
+- `503` - Database not connected (server still runs for testing)
 
 Just a simple collection with:
 - `deviceId` - string, required
@@ -77,4 +148,16 @@ Just a simple collection with:
 - MongoDB Atlas for storage
 - Mongoose for database stuff
 - MQTT for the bonus real-time feature
+
+## Quick Troubleshooting
+
+- **"MongoDB connection failed"** - Check your MONGO_URI and make sure your IP is whitelisted in Atlas
+- **"Database not connected"** - Server runs without DB for testing, but API returns 503
+- **400 errors** - You're missing deviceId or temperature in your request
+- **404 errors** - That device doesn't have any readings yet
+- **MQTT not working** - Make sure you have an MQTT broker running on localhost:1883
+
+Test if the server is running: `curl http://localhost:4000/`
+
+
 
