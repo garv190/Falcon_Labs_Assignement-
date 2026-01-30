@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const sensorSchema = new mongoose.Schema({
+const IotDevice = new mongoose.Schema({
   deviceId: {
     type: String,
     required: true,
@@ -22,6 +22,6 @@ const sensorSchema = new mongoose.Schema({
   },
 });
 
-const Devicedata = mongoose.model("Devicedata", sensorSchema);
+const Devicedata = mongoose.model("Devicedata", IotDevice);
 
 module.exports = Devicedata;
