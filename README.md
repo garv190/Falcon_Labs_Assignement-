@@ -15,8 +15,8 @@ A simple Node.js service for handling IoT temperature sensor data. It saves read
 2. Install stuff: `npm install`
 3. Set up your `.env` file:
    ```
-   MONGO_URI=mongodb+srv://your-username:your-password@your-cluster.mongodb.net/sensor_db?retryWrites=true&w=majority
-   MQTT_URI=mqtt://your-mqtt-broker:1883
+   MONGO_URI=""
+   MQTT_URI=""
    ```
 4. Run it: `npm run dev` for development
 
