@@ -40,7 +40,7 @@ You'll need Node.js 18+ and a MongoDB Atlas account (free tier works).
 5. **Run the server**
    ```bash
    npm run dev  # for development
-   npm run serve  # for production
+   
    ```
 
 Server starts on port 4000. If MongoDB connection fails, check your IP whitelist - that's usually the issue.
