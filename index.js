@@ -29,7 +29,7 @@ mongoose
   })
   .catch((error) => {
     console.log("MongoDB connection failed:", error.message);
-    console.log("Server will run anyway for testing.");
+    
   });
 
 app.listen(4000, () => {
