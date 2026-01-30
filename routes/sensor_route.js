@@ -39,12 +39,12 @@ router.get("/:deviceId/latest", async (req, res) => {
     const data = await Devicedata.findOne({ deviceId }).sort({ timestamp: -1 });
 
     if (!data) {
-      return res.status(404).json({ message: "No readings found for this device" });
+      return res.status(404).json({ message: "No readings" });
     }
 
     res.status(200).json(data);
   } catch (error) {
-    console.error('Error retrieving sensor reading:', error);
+    console.error('Error in getting sensor reading:', error);
     res.status(500).json({ message: error.message });
   }
 });

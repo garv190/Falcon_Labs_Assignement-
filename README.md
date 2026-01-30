@@ -62,19 +62,6 @@ If you have an MQTT broker running, this will automatically listen for temperatu
 - Message: Just the temperature number as text (like "32.1")
 - It saves these directly to the database
 
-## Testing
-
-Try these curl commands (server runs on port 4000):
-
-```bash
-# Add a reading
-curl -X POST http://localhost:4000/api/sensor/ingest \
-  -H "Content-Type: application/json" \
-  -d '{"deviceId": "sensor-01", "temperature": 32.1}'
-
-# Get the latest
-curl http://localhost:4000/api/sensor/sensor-01/latest
-```
 
 ## Database Schema
 
