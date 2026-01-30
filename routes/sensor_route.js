@@ -39,7 +39,7 @@ router.get("/:deviceId/latest", async (req, res) => {
     const data = await Devicedata.findOne({ deviceId }).sort({ timestamp: -1 });
 
     if (!data) {
-      return res.status(404).json({ message: "No readings" });
+      return res.status(404).json({ message: "No readings found for this device" });
     }
 
     res.status(200).json(data);
